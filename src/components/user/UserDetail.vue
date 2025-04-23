@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { User } from '@/types/user';
-import UserTrainingCard from "@/components/user/UserTrainingCard.vue";
+import UserTrainingCard from "@/components/training/UserTrainingCard.vue";
 import { Training } from '@/types/training';
 import { useQuery } from '@vue/apollo-composable';
 import { GET_USER_TRAININGS } from '@/graphql';
