@@ -106,7 +106,7 @@ const handleCompletion = async () => {
             <p class="ma-0 d-flex align-center">1 of 6</p>
         </v-btn-group>
         <v-btn-group color="success">
-            <v-menu v-model="dropdownMenu" offset-y transition="scale-transition" min-width="200">
+            <v-menu v-model="dropdownMenu" offset-y transition="scale-transition" min-width="200" :open-on-hover="true">
                 <template #activator="{ props }">
                 <v-btn v-bind="props" class="ml-2">
                     Contetns : {{ content?.title || 'Select content' }}
