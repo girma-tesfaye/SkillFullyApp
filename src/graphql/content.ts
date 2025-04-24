@@ -29,4 +29,8 @@ query GetContent($contentId: String!) {
 `
 
 
-
+export const COMPLETE_CONTENT = gql`
+mutation CompleteContent($input: CompleteContentInput!) {
+  completeContent(input: $input)
+}
+`
