@@ -81,7 +81,6 @@ const handleCompletion = async () => {
         trainingId
     };
 
-    console.log({ input });
     const res = await markCompleted({ input });
     if (res?.data.completeContent) {
         refetchTraining();
@@ -93,6 +92,13 @@ const handleCompletion = async () => {
 
 <template>
 <v-container class="overflow-y-auto max-h-80vh d-flex flex-column">
+        <div class="d-flex flex-column align-center justify-center mb-8">
+            <v-card flat max-width="600" class="text-center">
+            <v-card-title class="text-h4">{{ training?.title }}</v-card-title>
+            <v-progress-linear color="success" height="10" model-value="10" />
+            <v-card-text class="text-body-1 mx-auto" style="max-width: 800px;">{{ training?.description }}</v-card-text>
+            </v-card>
+        </div>
     <v-card flat class="d-flex justify-space-between align-center sticky top-0 z-1" color="success">
         <v-btn-group color="success">
             <v-btn icon="mdi-chevron-left" @click="navigateContent('prev')"/>
