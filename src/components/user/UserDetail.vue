@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { User } from '@/types/user';
-import UserTrainingCard from "@/components/training/UserTrainingCard.vue";
+import UserTrainings from '../training/UserTrainings.vue';
 import { Training } from '@/types/training';
 import { useQuery } from '@vue/apollo-composable';
 import { GET_USER_TRAININGS } from '@/graphql';
@@ -141,7 +141,7 @@ const formatTime = (dateString: string) => {
     </v-window-item>
 
     <v-window-item value="trainings">
-        <UserTrainingCard :trainings="userTrainings"/>
+        <UserTrainings :trainings="userTrainings"/>
     </v-window-item>
 
 
