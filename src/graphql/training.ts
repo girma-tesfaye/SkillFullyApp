@@ -23,6 +23,7 @@ query GetTraining($getTrainingId: String!) {
       contents {
         id
         title
+        isCompleted
       }
     }
   }
@@ -66,6 +67,7 @@ query Query {
       contents {
         id
         title
+        isCompleted
       }
     }
   }
