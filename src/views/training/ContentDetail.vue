@@ -92,7 +92,7 @@ const navigateContent = (direction: 'next' | 'prev') => {
                         </v-list-item-title>
                             <v-list-item v-for="item in material.contents" :key="item.id" @click="setContentId(item.id)">
                             <v-list-item-title>
-                                <v-icon color="success">mdi-circle-outline</v-icon>
+                                <v-icon color="success">{{ item.isCompleted ? 'mdi-check-circle' : 'mdi-circle-outline' }}</v-icon>
                                 {{ item.title }}
                             </v-list-item-title>
                             </v-list-item>
