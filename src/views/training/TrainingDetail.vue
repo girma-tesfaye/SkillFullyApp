@@ -116,7 +116,7 @@ const handleStartModule = (id: string) => {
                     <v-list-item v-for="content in module.contents" :key="content.id" :to="`/trainings/content/${trainingId}?contentId=${content.id}`">
                     <div class="d-flex align-center justify-space-between">
                       <v-list-item-content>{{ content.title }}</v-list-item-content>
-                      <v-chip color="success" class="ml-2">Completed</v-chip>
+                      <v-chip v-if="content.isCompleted" color="success" class="ml-2">completed</v-chip>
                     </div>
                     </v-list-item>
                 </v-list>

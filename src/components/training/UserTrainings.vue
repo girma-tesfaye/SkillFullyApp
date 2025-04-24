@@ -57,7 +57,7 @@ const selectedTraining = ref<Training>()
                     {{ material.title }}
                 </v-expansion-panel-title>
             <v-expansion-panel-text v-for="content in material.contents" :key="content.id"> 
-                <v-icon color="success">{{ 'mdi-check-circle-outline' }}</v-icon>
+                <v-icon color="success">{{ content.isCompleted ? 'mdi-check-circle' : 'mdi-circle-outline'}}</v-icon>
                 {{ content.title }} 
             </v-expansion-panel-text>
             </v-expansion-panel>

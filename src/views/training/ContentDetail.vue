@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
-import { useQuery } from '@vue/apollo-composable';
+import { useMutation, useQuery } from '@vue/apollo-composable';
 import RichTextViewer from '@/components/text/RichTextViewer.vue';
 import { GET_TRAINING } from '@/graphql';
-import { GET_CONTENT } from '@/graphql/content';
+import { COMPLETE_CONTENT, GET_CONTENT } from '@/graphql/content';
 import type { Training } from '@/types/training';
 
 const route = useRoute();
@@ -13,9 +13,9 @@ const dropdownMenu = ref(false);
 const training = ref<Training>();
 const content = ref();
 const allContents = ref();
-const contentId = ref<string>();
+const contentId = ref<string | null>(null);
 
-const { result: trainingResult } = useQuery(GET_TRAINING, {
+const { result: trainingResult, refetch: refetchTraining } = useQuery(GET_TRAINING, {
     getTrainingId: trainingId,
 });
 
@@ -32,8 +32,14 @@ watchEffect(() => {
         training.value = trainingResult.value.getTraining;
         allContents.value = training.value?.materials?.flatMap(material => material.contents) || [];
         const firstId = training.value?.materials?.[0]?.contents?.[0]?.id;
-        if (route.query.contentId) contentId.value = route.query.contentId as string;
-        else if (firstId) contentId.value = firstId;
+
+        if (!contentId.value) {
+            if (route.query.contentId) {
+            contentId.value = route.query.contentId as string;
+            } else if (firstId) {
+            contentId.value = firstId;
+            }
+        }
     }
 });
 
@@ -66,10 +72,33 @@ const navigateContent = (direction: 'next' | 'prev') => {
         }
     }
 };
+
+const { mutate: markCompleted } = useMutation(COMPLETE_CONTENT)
+
+const handleCompletion = async () => {
+    const input = {
+        contentId: contentId.value,
+        trainingId
+    };
+
+    const res = await markCompleted({ input });
+    if (res?.data.completeContent) {
+        refetchTraining();
+    }
+};
+
+
 </script>
 
 <template>
 <v-container class="overflow-y-auto max-h-80vh d-flex flex-column">
+        <div class="d-flex flex-column align-center justify-center mb-8">
+            <v-card flat max-width="600" class="text-center">
+            <v-card-title class="text-h4">{{ training?.title }}</v-card-title>
+            <v-progress-linear color="success" height="10" model-value="10" />
+            <v-card-text class="text-body-1 mx-auto" style="max-width: 800px;">{{ training?.description }}</v-card-text>
+            </v-card>
+        </div>
     <v-card flat class="d-flex justify-space-between align-center sticky top-0 z-1" color="success">
         <v-btn-group color="success">
             <v-btn icon="mdi-chevron-left" @click="navigateContent('prev')"/>
@@ -77,7 +106,7 @@ const navigateContent = (direction: 'next' | 'prev') => {
             <p class="ma-0 d-flex align-center">1 of 6</p>
         </v-btn-group>
         <v-btn-group color="success">
-            <v-menu v-model="dropdownMenu" offset-y transition="scale-transition" min-width="200">
+            <v-menu v-model="dropdownMenu" offset-y transition="scale-transition" min-width="200" :open-on-hover="true">
                 <template #activator="{ props }">
                 <v-btn v-bind="props" class="ml-2">
                     Contetns : {{ content?.title || 'Select content' }}
@@ -92,7 +121,7 @@ const navigateContent = (direction: 'next' | 'prev') => {
                         </v-list-item-title>
                             <v-list-item v-for="item in material.contents" :key="item.id" @click="setContentId(item.id)">
                             <v-list-item-title>
-                                <v-icon color="success">mdi-circle-outline</v-icon>
+                                <v-icon color="success">{{ item.isCompleted ? 'mdi-check-circle' : 'mdi-circle-outline' }}</v-icon>
                                 {{ item.title }}
                             </v-list-item-title>
                             </v-list-item>
@@ -108,6 +137,7 @@ const navigateContent = (direction: 'next' | 'prev') => {
             <v-card-title class="text-center text-h3">{{ content.title }}</v-card-title>
         </v-card>
         <RichTextViewer :content="content.content" style="background: inherit;"/>
+        <v-btn color="success" @click="handleCompletion()">mrk as completed</v-btn>
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />
