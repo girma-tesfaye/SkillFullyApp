@@ -7,6 +7,7 @@ export interface Content {
     id: string;
     title: string;
     duration: number;
+    isCompleted: boolean;
 }
 
 export interface Material {
