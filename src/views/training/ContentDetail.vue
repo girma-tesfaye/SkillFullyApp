@@ -138,7 +138,7 @@ const handleCompletion = async () => {
             <v-card-title class="text-center text-h3">{{ content.title }}</v-card-title>
         </v-card>
         <RichTextViewer :content="content.content" style="background: inherit;"/>
-        <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mrk as completed</v-btn>
+        <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />
