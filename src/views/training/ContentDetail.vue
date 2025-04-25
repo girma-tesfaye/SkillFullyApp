@@ -84,6 +84,7 @@ const handleCompletion = async () => {
     const res = await markCompleted({ input });
     if (res?.data.completeContent) {
         refetchTraining();
+        content.value = {...content.value, isCompleted: true}
     }
 };
 
@@ -109,7 +110,7 @@ const handleCompletion = async () => {
             <v-menu v-model="dropdownMenu" offset-y transition="scale-transition" min-width="200" :open-on-hover="true">
                 <template #activator="{ props }">
                 <v-btn v-bind="props" class="ml-2">
-                    Contetns : {{ content?.title || 'Select content' }}
+                    Contents: {{ content?.title || 'Select content' }}
                     <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
                 </template>
@@ -137,7 +138,7 @@ const handleCompletion = async () => {
             <v-card-title class="text-center text-h3">{{ content.title }}</v-card-title>
         </v-card>
         <RichTextViewer :content="content.content" style="background: inherit;"/>
-        <v-btn color="success" @click="handleCompletion()">mrk as completed</v-btn>
+        <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mrk as completed</v-btn>
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />
