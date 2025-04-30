@@ -6,8 +6,6 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_USER_BY_ID } from "@/graphql";
 
 const userStore = useUserStore()
-console.log("user", userStore.user)
-
 
 const user = ref()
 const { result } = useQuery(GET_USER_BY_ID, { userId: userStore.user?.id })

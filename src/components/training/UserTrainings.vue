@@ -34,12 +34,17 @@ const selectedTraining = ref<Training>()
             <v-card-title>
                 {{ training?.title  }}
             </v-card-title>
-            <v-card-text>
-                50% complated
+            <v-card-text >
+                <v-chip v-if="training.progress" color="success" variant="outlined" size="small">
+                    {{ training.progress + "% completed" }}
+                </v-chip>
+                <v-chip v-else color="info">
+                    Not started
+                </v-chip>
             </v-card-text>
         </v-col>
         </v-row>
-        <v-progress-linear color="info" model-value="50" />
+        <v-progress-linear color="info" :model-value="training.progress" />
      </v-card>  
     </v-col> 
     <v-col>

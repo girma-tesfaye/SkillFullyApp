@@ -24,6 +24,8 @@ query GetContent($contentId: String!) {
     id
     title
     content
+    type
+    isCompleted
   }
 }
 `

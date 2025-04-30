@@ -15,6 +15,7 @@ query GetTraining($getTrainingId: String!) {
     tags
     isRequired
     isEnrolled
+    progress
     materials {
       id
       title
@@ -61,6 +62,7 @@ query Query {
   getUserTrainings {
     id
     title
+    progress
     materials {
       id
       title

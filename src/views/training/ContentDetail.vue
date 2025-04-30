@@ -6,6 +6,8 @@ import RichTextViewer from '@/components/text/RichTextViewer.vue';
 import { GET_TRAINING } from '@/graphql';
 import { COMPLETE_CONTENT, GET_CONTENT } from '@/graphql/content';
 import type { Training } from '@/types/training';
+import { ContentType } from '@/types/material';
+import YoutubePlayer from '@/components/content/YoutubePlayer.vue';
 
 const route = useRoute();
 const trainingId = route.params.trainingId;
@@ -84,6 +86,7 @@ const handleCompletion = async () => {
     const res = await markCompleted({ input });
     if (res?.data.completeContent) {
         refetchTraining();
+        content.value = {...content.value, isCompleted: true}
     }
 };
 
@@ -109,7 +112,7 @@ const handleCompletion = async () => {
             <v-menu v-model="dropdownMenu" offset-y transition="scale-transition" min-width="200" :open-on-hover="true">
                 <template #activator="{ props }">
                 <v-btn v-bind="props" class="ml-2">
-                    Contetns : {{ content?.title || 'Select content' }}
+                    Contents: {{ content?.title || 'Select content' }}
                     <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
                 </template>
@@ -136,8 +139,12 @@ const handleCompletion = async () => {
         <v-card flat rounded="none" class="d-flex justify-center align-center" style="background: inherit;">
             <v-card-title class="text-center text-h3">{{ content.title }}</v-card-title>
         </v-card>
-        <RichTextViewer :content="content.content" style="background: inherit;"/>
-        <v-btn color="success" @click="handleCompletion()">mrk as completed</v-btn>
+        <YoutubePlayer v-if="content.type === 'VIDEO'" />
+        <RichTextViewer v-if="content.type === ContentType.RICH_TEXT" :content="content.content" style="background: inherit;"/>
+        <v-btn-group>
+            <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
+            <v-chip v-if="content.isCompleted" color="success">completed</v-chip>
+        </v-btn-group>
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />

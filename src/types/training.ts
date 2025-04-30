@@ -11,6 +11,7 @@ export interface Training {
   deadline?: string;
   isRequired: boolean;
   isEnrolled: boolean;
+  progress: number;
   materials: Material[];
   estimatedDuration: number;
   createdAt: string;

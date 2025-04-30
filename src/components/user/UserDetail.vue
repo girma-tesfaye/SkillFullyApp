@@ -69,9 +69,6 @@ const formatTime = (dateString: string) => {
         <div class="text-body-1 text-secondary mb-4">
           {{ user.email }}
         </div>
-        <div class="d-flex gap-2">
-          <v-btn variant="outlined" color="primary">View Profile</v-btn>
-        </div>
       </div>
     </v-col>
     <v-col cols="12" md="4">
