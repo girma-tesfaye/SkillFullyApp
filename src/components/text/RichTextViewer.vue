@@ -1,27 +1,24 @@
+<script setup lang="ts">
+import DOMPurify from 'dompurify'
+import { computed } from 'vue';
+
+const props = defineProps<{
+  content: string;
+}>();
+
+const content = props.content;
+
+const sanitizedContent = computed(() => {
+  return DOMPurify.sanitize(content);
+});
+
+</script>
+
 <template>
   <div class="container">
     <div v-html="sanitizedContent" class="prose"></div>
   </div>
 </template>
-
-<script>
-import DOMPurify from 'dompurify'
-
-export default {
-  name: 'RichTextViewer',
-  props: {
-    content: {
-      type: String,
-      default: ''
-    }
-  },
-  computed: {
-    sanitizedContent() {
-      return DOMPurify.sanitize(this.content)
-    }
-  }
-}
-</script>
 
 <style>
 .container {
