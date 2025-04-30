@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Footer from './components/layout/Footer.vue';
 import Navbar from './components/layout/Navbar.vue';
 import { useRoute } from 'vue-router';
 const route = useRoute();
@@ -15,6 +16,7 @@ const route = useRoute();
         </v-fade-transition>
       </router-view>
     </v-main>
+    <Footer />
   </v-app>
 </template>
 
