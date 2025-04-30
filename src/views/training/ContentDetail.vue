@@ -141,7 +141,10 @@ const handleCompletion = async () => {
         </v-card>
         <YoutubePlayer v-if="content.type === 'VIDEO'" />
         <RichTextViewer v-if="content.type === ContentType.RICH_TEXT" :content="content.content" style="background: inherit;"/>
-        <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
+        <v-btn-group>
+            <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
+            <v-chip v-if="content.isCompleted" color="success">completed</v-chip>
+        </v-btn-group>
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />
