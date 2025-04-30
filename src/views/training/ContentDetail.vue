@@ -6,6 +6,8 @@ import RichTextViewer from '@/components/text/RichTextViewer.vue';
 import { GET_TRAINING } from '@/graphql';
 import { COMPLETE_CONTENT, GET_CONTENT } from '@/graphql/content';
 import type { Training } from '@/types/training';
+import { ContentType } from '@/types/material';
+import VideoPlayer from '@/components/content/VideoPlayer.vue';
 
 const route = useRoute();
 const trainingId = route.params.trainingId;
@@ -137,7 +139,8 @@ const handleCompletion = async () => {
         <v-card flat rounded="none" class="d-flex justify-center align-center" style="background: inherit;">
             <v-card-title class="text-center text-h3">{{ content.title }}</v-card-title>
         </v-card>
-        <RichTextViewer :content="content.content" style="background: inherit;"/>
+        <VideoPlayer v-if="content.type === 'VIDEO'" />
+        <RichTextViewer v-if="content.type === ContentType.RICH_TEXT" :content="content.content" style="background: inherit;"/>
         <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
