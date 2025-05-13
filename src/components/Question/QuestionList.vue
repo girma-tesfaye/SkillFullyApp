@@ -7,8 +7,7 @@ import { SUBMIT_ANSWER } from '@/graphql';
 const props = defineProps<{
   questions: Question[]
   assessmentId: string | null
-  navigateContent: (action: 'next' | 'prev') => void
-  updateAssessmentId: (id: string | null) => void
+  navigateContentAfterSubmission: () => void
 }>();
 
 const answers = ref<Answer[]>();
@@ -63,8 +62,7 @@ const handleSubmitAnswer = async () => {
     });
 
     if (response?.data.submitAnswer) {
-      props.updateAssessmentId(null);
-      props.navigateContent('next');
+      props.navigateContentAfterSubmission()
     }
   } catch (error) {
     console.error('Error submitting answers');
