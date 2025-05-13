@@ -25,6 +25,8 @@ query GetTraining($getTrainingId: String!) {
         id
         title
         isCompleted
+        assessmentId
+        isAssessmentSubmitted
       }
     }
   }

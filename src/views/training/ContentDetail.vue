@@ -3,11 +3,13 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useMutation, useQuery } from '@vue/apollo-composable';
 import RichTextViewer from '@/components/text/RichTextViewer.vue';
-import { GET_TRAINING } from '@/graphql';
+import { GET_ASSESSMENT_QUESTIONS, GET_TRAINING } from '@/graphql';
 import { COMPLETE_CONTENT, GET_CONTENT } from '@/graphql/content';
 import type { Training } from '@/types/training';
 import { ContentType } from '@/types/material';
 import YoutubePlayer from '@/components/content/YoutubePlayer.vue';
+import { Question } from '@/types/question';
+import QuestionList from '@/components/Question/QuestionList.vue';
 
 const route = useRoute();
 const trainingId = route.params.trainingId;
@@ -16,6 +18,8 @@ const training = ref<Training>();
 const content = ref();
 const allContents = ref();
 const contentId = ref<string | null>(null);
+const assessmentId = ref<string | null>();
+const questions = ref<Question[]>();
 
 const { result: trainingResult, refetch: refetchTraining } = useQuery(GET_TRAINING, {
     getTrainingId: trainingId,
@@ -67,6 +71,16 @@ const navigateContent = (direction: 'next' | 'prev') => {
             (content: { id: string }) => content.id === contentId.value
         );
     }
+
+    const currentContent = allContents.value[currentIndex]
+
+    if(direction === 'next' && currentContent.assessmentId && !currentContent.isAssessmentSubmitted ){
+        assessmentId.value = allContents.value[currentIndex].assessmentId;
+        return;
+    } else if (direction === 'prev' && allContents.value[currentIndex].assessmentId ) {
+        assessmentId.value = null
+    }
+    
     if (currentIndex !== undefined && currentIndex >= 0) {
         const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
         if (newIndex >= 0 && newIndex < allContents.value.length) {
@@ -90,6 +104,28 @@ const handleCompletion = async () => {
     }
 };
 
+
+const { 
+    result: questionsResult, 
+    loading: questionLoading, 
+    error: questionError, 
+    refetch: refetchQuestions 
+} = useQuery(GET_ASSESSMENT_QUESTIONS, () => ({ assessmentId: assessmentId.value }), {
+    enabled: computed(() => !!assessmentId.value),
+});
+
+watchEffect(() => {
+    if (questionsResult.value){
+        questions.value = questionsResult.value.assessmentQuestions;
+    }
+})
+
+
+const navigateContentAfterSubmission = async () => {
+    await refetchTraining();
+    navigateContent('next')
+    assessmentId.value = null;
+}
 
 </script>
 
@@ -137,14 +173,25 @@ const handleCompletion = async () => {
     </v-card>
     <div v-if="content" style="flex: 1; overflow-y: auto; max-height: 80vh;">
         <v-card flat rounded="none" class="d-flex justify-center align-center" style="background: inherit;">
-            <v-card-title class="text-center text-h3">{{ content.title }}</v-card-title>
-        </v-card>
-        <YoutubePlayer v-if="content.type === 'VIDEO'" />
-        <RichTextViewer v-if="content.type === ContentType.RICH_TEXT" :content="content.content" style="background: inherit;"/>
-        <v-btn-group>
-            <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
-            <v-chip v-if="content.isCompleted" color="success">completed</v-chip>
-        </v-btn-group>
+            <v-card-title v-if="assessmentId" class="text-center text-h5"> Quize for {{ content.title }}</v-card-title>
+            <v-card-title v-else class="text-center text-h3">{{ content.title }}</v-card-title>
+        </v-card>        
+        <QuestionList
+            v-if="assessmentId"
+            :assessmentId="assessmentId" 
+            :questions="questions || []"
+            :navigateContentAfterSubmission="navigateContentAfterSubmission"
+            />
+        <div v-else>
+            <YoutubePlayer v-if="content.type === 'VIDEO'" />
+            <RichTextViewer v-if="content.type === ContentType.RICH_TEXT" :content="content.content" style="background: inherit;"/>
+            <v-btn-group>
+              <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
+              <v-chip v-if="content.isCompleted" color="success">completed</v-chip>
+            </v-btn-group>
+             
+        </div>
+
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />

@@ -26,3 +26,26 @@ query GetAssessmentById($getAssessmentByIdId: String!) {
       
   }
 }`
+
+
+export const GET_ASSESSMENT_QUESTIONS = gql`
+query AssessmentQuestions($assessmentId: String!) {
+  assessmentQuestions(assessmentId: $assessmentId) {
+    _id
+    text
+    type
+    weight  
+    choices {
+      _id
+      text
+      order
+    }
+  }
+}`
+
+
+
+export const SUBMIT_ANSWER = gql`
+mutation SubmitAnswer($answerInput: CreateAnswerInput!) {
+  submitAnswer(answerInput: $answerInput)
+}`
