@@ -175,8 +175,7 @@ const navigateContentAfterSubmission = async () => {
         <v-card flat rounded="none" class="d-flex justify-center align-center" style="background: inherit;">
             <v-card-title v-if="assessmentId" class="text-center text-h5"> Quize for {{ content.title }}</v-card-title>
             <v-card-title v-else class="text-center text-h3">{{ content.title }}</v-card-title>
-        </v-card>
-        
+        </v-card>        
         <QuestionList
             v-if="assessmentId"
             :assessmentId="assessmentId" 
@@ -186,9 +185,13 @@ const navigateContentAfterSubmission = async () => {
         <div v-else>
             <YoutubePlayer v-if="content.type === 'VIDEO'" />
             <RichTextViewer v-if="content.type === ContentType.RICH_TEXT" :content="content.content" style="background: inherit;"/>
-            <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
+            <v-btn-group>
+              <v-btn v-if="!content.isCompleted" color="success" @click="handleCompletion()">mark as completed</v-btn>
+              <v-chip v-if="content.isCompleted" color="success">completed</v-chip>
+            </v-btn-group>
+             
         </div>
-        
+
     </div>
     <v-container v-else-if="contentLoading" class="d-flex justify-center align-center min-h-100vh">
         <v-progress-circular size="large" color="info" indeterminate />
