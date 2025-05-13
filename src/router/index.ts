@@ -7,6 +7,7 @@ import Profile from "@/views/user/Profile.vue";
 import ContentDetail from "@/views/training/ContentDetail.vue";
 import Login from '@/views/auth/Login.vue';
 import RegisterUser from '@/views/auth/RegisterUser.vue';
+import LandingPage from '@/views/LandingPage.vue';
 
 
 
@@ -23,7 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: RegisterUser,
   },
-
+  {
+    path: '/',
+    name: 'LandingPage',
+    component: LandingPage,
+  },
   {
     path: '/dashboard',
     name: 'Dashboard',
