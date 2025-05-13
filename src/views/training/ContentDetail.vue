@@ -72,7 +72,9 @@ const navigateContent = (direction: 'next' | 'prev') => {
         );
     }
 
-    if(direction === 'next' && allContents.value[currentIndex].assessmentId){
+    const currentContent = allContents.value[currentIndex]
+
+    if(direction === 'next' && currentContent.assessmentId && !currentContent.isAssessmentSubmitted ){
         assessmentId.value = allContents.value[currentIndex].assessmentId;
         return;
     } else if (direction === 'prev' && allContents.value[currentIndex].assessmentId ) {
@@ -118,9 +120,12 @@ watchEffect(() => {
     }
 })
 
-const updateAssessmentId = (id: string | null) => {
-  assessmentId.value = id;
-};
+
+const navigateContentAfterSubmission = async () => {
+    await refetchTraining();
+    navigateContent('next')
+    assessmentId.value = null;
+}
 
 </script>
 
@@ -176,8 +181,7 @@ const updateAssessmentId = (id: string | null) => {
             v-if="assessmentId"
             :assessmentId="assessmentId" 
             :questions="questions || []"
-            :navigateContent = "navigateContent"
-            :updateAssessmentId = "updateAssessmentId"
+            :navigateContentAfterSubmission="navigateContentAfterSubmission"
             />
         <div v-else>
             <YoutubePlayer v-if="content.type === 'VIDEO'" />
