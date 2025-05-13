@@ -26,3 +26,9 @@ export enum QuestionModalTypes {
     ADD_QUESTION = "ADD_QUESTION",
     EDIT_QUESTION = "EDIT_QUESTION",
 }
+
+
+export interface Answer {
+    questionId: string;
+    answer: string;
+}
