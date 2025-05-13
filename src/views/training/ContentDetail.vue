@@ -71,6 +71,14 @@ const navigateContent = (direction: 'next' | 'prev') => {
             (content: { id: string }) => content.id === contentId.value
         );
     }
+
+    if(direction === 'next' && allContents.value[currentIndex].assessmentId){
+        assessmentId.value = allContents.value[currentIndex].assessmentId;
+        return;
+    } else if (direction === 'prev' && allContents.value[currentIndex].assessmentId ) {
+        assessmentId.value = null
+    }
+    
     if (currentIndex !== undefined && currentIndex >= 0) {
         const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
         if (newIndex >= 0 && newIndex < allContents.value.length) {
